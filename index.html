@@ -6,11 +6,18 @@
 		$(document).ready(function() {
 			$('#reconnect').click(
 				function() {
-					$('#message').html('Resetting connection. This will take 30s.');
+					var spinner = $('.spinner');
+					spinner.show();
+					var message = $('#message');
+					message.html('Disconnecting...');
 					epsilam.panda.reconnect(
 						function() {
-							$('#message').html(
+							message.html(
 								"Connection has been reset");
+							spinner.hide();
+						},
+						function() {
+							message.html('Connecting...');
 						}
 					);
 				});
@@ -18,11 +25,17 @@
 	</script>
 	<style type="text/css">
 		#reconnect {
-			width: 30rem;
+			width: 20rem;
 			height: 10rem;
 			background-color: #f07a4e;
 			font-size: 2em;
 			font-weight: bold;
+		}
+
+		.spinner {
+			width: 16px;
+			height: 16px;
+			display: none;
 		}
 	</style>
 </head>
@@ -31,5 +44,5 @@
 <h1>Network Reconnection</h1>
 
 <button id='reconnect'>Reconnect</button>
-<div id='message'></span>
+<div><img src='images/spinner.gif' class='spinner' /><span id='message'></span></div>
 </body>
