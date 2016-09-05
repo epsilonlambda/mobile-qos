@@ -1,0 +1,35 @@
+<html>
+<head>
+	<script type="text/javascript" src="javascripts/jquery.js"></script>
+	<script type="text/javascript" src="javascripts/panda.js"></script>
+	<script type="text/javascript">
+		$(document).ready(function() {
+			$('#reconnect').click(
+				function() {
+					$('#message').html('Resetting connection. This will take 30s.');
+					epsilam.panda.reconnect(
+						function() {
+							$('#message').html(
+								"Connection has been reset");
+						}
+					);
+				});
+			});
+	</script>
+	<style type="text/css">
+		#reconnect {
+			width: 30rem;
+			height: 10rem;
+			background-color: #f07a4e;
+			font-size: 2em;
+			font-weight: bold;
+		}
+	</style>
+</head>
+<body>
+	
+<h1>Network Reconnection</h1>
+
+<button id='reconnect'>Reconnect</button>
+<div id='message'></span>
+</body>
