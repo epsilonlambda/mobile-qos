@@ -16,7 +16,8 @@ var config = {
 
 var endpoints = {
   dialup: 'http://' + config.host +'/api/dialup/dial',
-  status: 'http://' + config.host +'/api/monitoring/status'
+  status: 'http://' + config.host +'/api/monitoring/status',
+  usageStats: 'http://' + config.host + '/api/monitoring/traffic-statistics'
 };
 
 
@@ -48,19 +49,31 @@ router.post('/api/connect', makeConnectHandler(true));
 
 router.post('/api/disconnect', makeConnectHandler(false));
 
-function makeStatusHandler(expectedStatus) {
-	return function(req, res, next) {
-		var hwResponse = syncRequest('GET', endpoints.status);
-		var hwResponseObj = xml2js.parseString(hwResponse.getBody(),
+function hwAPIGetRequest(endpoint, responseHandler) {
+	var hwResponse = syncRequest('GET', endpoint);
+	xml2js.parseString(hwResponse.getBody(),
 			function(err, result){
 				console.log(result);
+				responseHandler(result);
+			});
+	
+}
+function makeStatusHandler(expectedStatus) {
+	return function(req, res, next) {
+		hwAPIGetRequest(endpoints.status,
+			function(result){
 				res.send(result.response.ConnectionStatus == expectedStatus);
 		});
-
 	};
 }
 router.get('/api/is-disconnected', makeStatusHandler(902));
 router.get('/api/is-connected', makeStatusHandler(901));
+router.get('/api/used-bandwidth', function(req, res, next) {
+	hwAPIGetRequest(endpoints.usageStats,
+		function(result) {
+			res.send(result.response.TotalDownload);
+		});
+	});
 
 
 module.exports = router;

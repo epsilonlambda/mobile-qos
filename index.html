@@ -3,6 +3,11 @@
 	<script type="text/javascript" src="javascripts/jquery.js"></script>
 	<script type="text/javascript" src="javascripts/panda.js"></script>
 	<script type="text/javascript">
+		function displayUsedBandwidth (){
+				$.get('/api/used-bandwidth', function(usedBytes) {
+					$('#used-bandwidth').html(usedBytes/(1000*1000*1000)); //should be 1024...
+				});
+		};
 		$(document).ready(function() {
 			$('#reconnect').click(
 				function() {
@@ -21,7 +26,10 @@
 						}
 					);
 				});
-			});
+
+			displayUsedBandwidth();
+			setInterval(displayUsedBandwidth, 10000);
+		});
 	</script>
 	<style type="text/css">
 		#reconnect {
@@ -45,4 +53,5 @@
 
 <button id='reconnect'>Reconnect</button>
 <div><img src='images/spinner.gif' class='spinner' /><span id='message'></span></div>
+<div>Used traffic: <span id='used-bandwidth'></span> GB</div>
 </body>
